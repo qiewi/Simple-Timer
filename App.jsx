@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
   View,
   Text,
   TouchableOpacity,
@@ -9,12 +8,17 @@ import {
 } from "react-native";
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from "@expo-google-fonts/poppins";
 import AppLoading from "expo-app-loading";
+import styles from "./components/styles";
 
 const TimerApp = () => {
   const [minutes, setMinutes] = useState("0");
   const [seconds, setSeconds] = useState("30");
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isTimeUp, setIsTimeUp] = useState(false); // New state for "Time's Up"
+  const [lastMinutes, setLastMinutes] = useState("0"); // Store the user's last input for minutes
+  const [lastSeconds, setLastSeconds] = useState("30"); // Store the user's last input for seconds
 
   // Load fonts
   let [fontsLoaded] = useFonts({
@@ -24,12 +28,12 @@ const TimerApp = () => {
 
   useEffect(() => {
     let interval = null;
-    if (isRunning) {
+    if (isRunning && !isPaused) {
       interval = setInterval(() => {
         setRemainingSeconds((prev) => {
           if (prev <= 0) {
             clearInterval(interval);
-            setIsRunning(false);
+            setIsTimeUp(true); // Set "Time's Up" when the timer ends
             return 0;
           }
           return prev - 1;
@@ -39,7 +43,7 @@ const TimerApp = () => {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isRunning]);
+  }, [isRunning, isPaused]);
 
   const formatTime = (time) => (time < 10 ? `0${time}` : time);
 
@@ -47,16 +51,30 @@ const TimerApp = () => {
     const totalSeconds =
       parseInt(minutes || "0", 10) * 60 + parseInt(seconds || "0", 10);
     if (totalSeconds > 0) {
+      setLastMinutes(minutes); // Save current input as last input
+      setLastSeconds(seconds); // Save current input as last input
       setRemainingSeconds(totalSeconds);
       setIsRunning(true);
+      setIsPaused(false); // Ensure pause is reset
+      setIsTimeUp(false); // Reset "Time's Up"
     }
   };
 
   const resetTimer = () => {
     setIsRunning(false);
+    setIsPaused(false); // Reset pause
+    setIsTimeUp(false); // Reset "Time's Up"
     setRemainingSeconds(0);
     setMinutes("0");
     setSeconds("30");
+  };
+
+  const stopTimer = () => {
+    setIsRunning(false);
+    setIsPaused(false); // Reset pause
+    setIsTimeUp(false); // Reset "Time's Up"
+    setMinutes(lastMinutes); // Restore last input for minutes
+    setSeconds(lastSeconds); // Restore last input for seconds
   };
 
   const handleMinutesInput = (text) => {
@@ -81,17 +99,36 @@ const TimerApp = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      {!isRunning && (
+      {!isRunning && !isTimeUp && (
         <View style={styles.titleContainer}>
           <Text style={styles.title}>⌚ </Text>
           <Text style={styles.title}>TIME-ME</Text>
         </View>
       )}
 
-      {isRunning ? (
-        <Text style={styles.timerText}>
-          {formatTime(displayMinutes)}:{formatTime(displaySeconds)}
-        </Text>
+      {isTimeUp ? (
+        <View style={styles.timesUpContainer}>
+          <Text style={styles.timesUpText}>Time's Up!</Text>
+          <TouchableOpacity
+            style={styles.backToMenuButton}
+            onPress={() => {
+              // Restore last input and show the menu/input screen
+              stopTimer();
+            }}
+          >
+            <Text style={styles.backToMenuButtonText}>Back to Menu</Text>
+          </TouchableOpacity>
+        </View>
+      ) : isRunning ? (
+        <View style={styles.timerContainer}>
+          <Text style={styles.timerText}>
+            {formatTime(displayMinutes)}:{formatTime(displaySeconds)}
+          </Text>
+          <View style={styles.runningLabelsContainer}>
+            <Text style={styles.runningLabel}>minutes</Text>
+            <Text style={styles.runningLabel}>seconds</Text>
+          </View>
+        </View>
       ) : (
         <View style={styles.inputRow}>
           <View style={styles.inputWrapper}>
@@ -116,134 +153,51 @@ const TimerApp = () => {
       )}
 
       <View style={styles.buttonContainer}>
-        {isRunning ? (
-          <TouchableOpacity style={styles.stopButton} onPress={() => setIsRunning(false)}>
-            <Text style={styles.stopButtonText}>Stop</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.startButton} onPress={startTimer}>
-            <Text style={styles.startButtonText}>Start</Text>
-          </TouchableOpacity>
+        {isRunning && !isTimeUp && (
+          <>
+            {isPaused ? (
+              <TouchableOpacity
+                style={styles.resumeButton}
+                onPress={() => setIsPaused(false)}
+              >
+                <Text style={styles.resumeButtonText}>Resume</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.pauseButton}
+                onPress={() => setIsPaused(true)}
+              >
+                <Text style={styles.pauseButtonText}>Pause</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              style={styles.stopButton}
+              onPress={stopTimer}
+            >
+              <Text style={styles.stopButtonText}>Stop</Text>
+            </TouchableOpacity>
+          </>
         )}
-        <TouchableOpacity style={styles.resetButton} onPress={resetTimer}>
-          <Text style={styles.buttonText}>Reset</Text>
-        </TouchableOpacity>
+
+        {!isRunning && !isTimeUp && (
+          <>
+            <TouchableOpacity
+              style={styles.startButton}
+              onPress={startTimer}
+            >
+              <Text style={styles.startButtonText}>Start</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.resetButton}
+              onPress={resetTimer}
+            >
+              <Text style={styles.buttonText}>Reset</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#07121B",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    position: "absolute",
-    top: 0,
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-    fontFamily: "Poppins_700Bold", // Use Poppins font
-  },
-  timerText: {
-    fontSize: 60,
-    fontFamily: "Poppins_400Regular",
-    color: "#FFFFFF",
-    marginBottom: 30,
-  },
-  inputRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    marginBottom: 30,
-  },
-  inputWrapper: {
-    alignItems: "center",
-    marginHorizontal: 10,
-  },
-  input: {
-    width: 60,
-    height: 60,
-    backgroundColor: "#1E293B",
-    color: "#FFFFFF",
-    borderRadius: 8,
-    textAlign: "center",
-    fontSize: 24,
-    fontFamily: "Poppins_400Regular",
-    borderWidth: 1,
-    borderColor: "#4B5563",
-  },
-  label: {
-    color: "#9CA3AF",
-    marginTop: 5,
-    fontSize: 16,
-    fontFamily: "Poppins_400Regular", // Label uses Poppins font
-  },
-  buttonContainer: {
-    flexDirection: "column",
-    marginTop: 20,
-  },
-  startButton: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 5,
-    borderColor: "#1E90FF",
-    backgroundColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  stopButton: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 5,
-    borderColor: "#FF6347",
-    backgroundColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  resetButton: {
-    marginTop: 30,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  startButtonText: {
-    color: "#1E90FF",
-    fontSize: 20,
-    fontFamily: "Poppins_400Regular",
-  },
-  stopButtonText: {
-    color: "#FF6347",
-    fontSize: 20,
-    fontFamily: "Poppins_400Regular",
-  },
-  buttonText: {
-    color: "#FFFFFF",
-    fontSize: 20,
-    fontFamily: "Poppins_400Regular",
-  },
-});
 
 export default TimerApp;
