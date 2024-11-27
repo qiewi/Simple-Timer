@@ -1,0 +1,8 @@
+{
+    "dependencies": {
+      "expo-app-loading": "*",
+      "@expo/vector-icons": "^14.0.3",
+      "react-native-paper": "4.9.2",
+      "@expo-google-fonts/poppins": "*"
+    }
+  }
