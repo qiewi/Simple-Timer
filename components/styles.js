@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     color: "#FFFFFF",
-    fontFamily: "Poppins_700Bold", // Use Poppins font
+    fontFamily: "Poppins_700Bold",
   },
   timerText: {
     fontSize: 60,
@@ -29,14 +29,13 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   timerContainer: {
-    alignItems: "center",
-    marginBottom: 20, // Spacing below the timer
+    alignItems: "center", 
   },
   runningLabelsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 150, // Adjust width to align the labels
-    marginTop: 10, // Add spacing above the labels
+    width: 150, 
+    marginTop: 0, 
   },
   runningLabel: {
     fontSize: 16,
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
     marginTop: 5,
     fontSize: 16,
-    fontFamily: "Poppins_400Regular", // Label uses Poppins font
+    fontFamily: "Poppins_400Regular",
   },
   buttonContainer: {
     flexDirection: "column",
@@ -130,7 +129,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     borderWidth: 5,
-    borderColor: "#FFA500", // Orange for pause
+    borderColor: "#FFA500", 
     backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
@@ -139,6 +138,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
+    marginTop: 30,
     marginBottom: 30,
   },
   pauseButtonText: {
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     borderWidth: 5,
-    borderColor: "#00FF7F", // Green for resume
+    borderColor: "#00FF7F",
     backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
+    marginTop: 30,
     marginBottom: 30,
   },
   resumeButtonText: {
@@ -173,17 +174,17 @@ const styles = StyleSheet.create({
   },
   timesUpText: {
     fontSize: 32,
-    color: "#FF6347", // Red color for emphasis
+    color: "#FF6347",
     fontFamily: "Poppins_700Bold",
     textAlign: "center",
-    marginBottom: 20, // Spacing between text and button
+    marginBottom: 20, 
   },
   backToMenuButton: {
     width: 180,
     height: 50,
     borderRadius: 25,
     borderWidth: 2,
-    borderColor: "#1E90FF", // Blue border for button
+    borderColor: "#1E90FF",
     backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   backToMenuButtonText: {
-    color: "#1E90FF", // Blue text for button
+    color: "#1E90FF", 
     fontSize: 18,
     fontFamily: "Poppins_400Regular",
   },
