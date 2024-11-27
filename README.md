@@ -2,6 +2,7 @@
 TIME-ME adalah aplikasi berbasis React Native yang dirancang untuk menghitung mundur waktu dengan fitur seperti start, pause, resume, stop, dan menampilkan "Time's Up!" ketika waktu habis. Proyek ini dibangun dengan pendekatan modular untuk memisahkan logika aplikasi dan meningkatkan keterbacaan serta pemeliharaan kode.
 
 # Struktur Folder
+```
 TIME-ME/
 │
 ├── components/
@@ -10,6 +11,7 @@ TIME-ME/
 │
 ├── App.js
 ├── README.md
+```
 
 # Penjelasan File
 
