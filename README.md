@@ -1,3 +1,4 @@
+![Banner Repo](https://github.com/user-attachments/assets/1e19980b-ed45-4503-8757-c40460645f05)
 # TIME-ME
 TIME-ME adalah aplikasi berbasis React Native yang dirancang untuk menghitung mundur waktu dengan fitur seperti start, pause, resume, stop, dan menampilkan "Time's Up!" ketika waktu habis. Proyek ini dibangun dengan pendekatan modular untuk memisahkan logika aplikasi dan meningkatkan keterbacaan serta pemeliharaan kode.
 
